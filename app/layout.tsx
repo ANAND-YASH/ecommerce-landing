@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "./context/CartContext";
-import { ThemeProvider } from "./context/ThemeContext"; // Import ThemeProvider
+//import { ThemeProvider } from "./context/ThemeContext"; // Import ThemeProvider
 import Navbar from "./components/Navbar"; 
 
 const geistSans = Geist({
@@ -24,12 +24,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        <ThemeProvider> {/* Wrap everything inside ThemeProvider */}
+       
           <CartProvider>
             <Navbar />
             {children}
           </CartProvider>
-        </ThemeProvider>
+       
       </body>
     </html>
   );

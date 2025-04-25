@@ -14,9 +14,9 @@ type Product = {
 
 const products: Product[] = [
   { id: "1", name: "Laptop", description: "A high-performance laptop for gaming and work.", price: 999, image: "/laptop.jpeg" },
-  { id: "2", name: "Smartphone", description: "Latest smartphone with amazing features.", price: 699, image: "/smartphone.jpg" },
-  { id: "3", name: "Headphones", description: "Noise-canceling wireless headphones.", price: 199, image: "/headphones.jpg" },
-  { id: "4", name: "Camera", description: "Capture high-quality photos and videos.", price: 499, image: "/camera.jpg" },
+  { id: "2", name: "Smartphone", description: "Latest smartphone with amazing features.", price: 699, image: "/laptop.jpeg" },
+  { id: "3", name: "Headphones", description: "Noise-canceling wireless headphones.", price: 199, image: "/laptop.jpeg" },
+  { id: "4", name: "Camera", description: "Capture high-quality photos and videos.", price: 499, image: "/laptop.jpeg" },
 ];
 
 export default function ProductsPage() {

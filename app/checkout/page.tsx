@@ -28,7 +28,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="max-w-lg mx-auto p-4">
-      {/* Step Indicator */}
+    
       <div className="flex items-center justify-between pb-4 border-b">
         <span className="text-green-600 font-semibold">Bag</span>
         <span className="text-green-600 font-semibold">Address</span>

@@ -1,38 +1,41 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import { FiShoppingCart, FiSearch } from "react-icons/fi";
 import { AiOutlineQrcode } from "react-icons/ai";
 import { IoPersonOutline } from "react-icons/io5";
-import ThemeSwitcher from "./ThemeSwitcher"; // Import Theme Switcher
+//import ThemeSwitcher from "./ThemeSwitcher";
 
 export default function Navbar() {
   const { cart } = useCart();
   const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const accountRef = useRef<HTMLDivElement>(null);
+
+  //  Detect click outside
+  useEffect(() => {
+    function handleClick(event: MouseEvent) {
+      if (accountRef.current && !accountRef.current.contains(event.target as Node)) {
+        setIsAccountOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClick);
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, []);
 
   return (
     <nav className="flex justify-between items-center px-8 py-4 shadow-md bg-white dark:bg-gray-900 dark:text-white">
-      
       <div className="flex items-center space-x-4">
-        <Image 
-          src="/image.webp"  
-          alt="Logo"
-          width={40} 
-          height={40} 
-        />
+        <Image src="/image.webp" alt="Logo" width={40} height={40} />
         <h1 className="text-2xl font-bold">ONLINE BUSINESS</h1>
         <div className="flex space-x-6 text-gray-700 dark:text-gray-300 ml-8">
-          <Link href="/products">
-            <span className="hover:text-black dark:hover:text-white cursor-pointer">Products</span>
-          </Link>
-          <Link href="#">
-            <span className="hover:text-black dark:hover:text-white cursor-pointer">Solutions</span>
-          </Link>
-          <Link href="#">
-            <span className="hover:text-black dark:hover:text-white cursor-pointer">Resources</span>
-          </Link>
+          <Link href="/products"><span className="hover:text-black dark:hover:text-white cursor-pointer">Products</span></Link>
+          <Link href="#"><span className="hover:text-black dark:hover:text-white cursor-pointer">Solutions</span></Link>
+          <Link href="#"><span className="hover:text-black dark:hover:text-white cursor-pointer">Resources</span></Link>
         </div>
       </div>
 
@@ -49,16 +52,17 @@ export default function Navbar() {
       </div>
 
       <div className="flex items-center space-x-6 relative">
-        <ThemeSwitcher /> {/* Add Theme Toggle Button Here */}
+       
 
+        {/*  Account Dropdown with outside click handling */}
         <div
+          ref={accountRef}
           className="relative cursor-pointer"
-          onMouseEnter={() => setIsAccountOpen(true)}
-          onMouseLeave={() => setIsAccountOpen(false)}
+          onClick={() => setIsAccountOpen(!isAccountOpen)}
         >
           <IoPersonOutline size={28} className="text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white" />
           {isAccountOpen && (
-            <div className="absolute left-0 top-10 w-64 bg-white dark:bg-gray-900 shadow-md rounded-md p-4">
+            <div className="absolute left-0 top-10 w-64 bg-white dark:bg-gray-900 shadow-md rounded-md p-4 z-50">
               <p className="font-semibold text-gray-700 dark:text-gray-300">Hello, User</p>
               <Link href="/account" className="block hover:text-blue-500 dark:hover:text-blue-400 mt-2">Your Account</Link>
               <Link href="/orders" className="block hover:text-blue-500 dark:hover:text-blue-400 mt-2">Your Orders</Link>
