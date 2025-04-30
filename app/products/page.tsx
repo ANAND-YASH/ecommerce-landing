@@ -1,7 +1,7 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "../context/CartContext";
-
+import { useMemo } from "react";
 
 type Product = {
   id: string;
@@ -10,7 +10,6 @@ type Product = {
   price: number;
   image: string;
 };
-
 
 const products: Product[] = [
   { id: "1", name: "Laptop", description: "A high-performance laptop for gaming and work.", price: 999, image: "/laptop.jpeg" },
@@ -21,76 +20,82 @@ const products: Product[] = [
 
 export default function ProductsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const searchTerm = searchParams.get("search")?.toLowerCase() || "";
   const { cart, addToCart, updateCartQuantity } = useCart();
 
-  
-  const handleBuyNow = (product: Product) => {
-    router.push(
-      `/checkout?name=${encodeURIComponent(product.name)}&price=${product.price}`
+  const filteredProducts = useMemo(() => {
+    if (!searchTerm) return products;
+    return products.filter((product) =>
+      product.name.toLowerCase().includes(searchTerm)
     );
+  }, [searchTerm]);
+
+  const handleBuyNow = (product: Product) => {
+    router.push(`/checkout?name=${encodeURIComponent(product.name)}&price=${product.price}`);
   };
 
   return (
     <div className="p-10">
       <h1 className="text-3xl font-bold mb-6">Products</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {products.map((product) => {
-          const cartItem = cart.find((item) => item.id === product.id);
-          const quantity = cartItem ? cartItem.quantity : 0;
+      {filteredProducts.length === 0 ? (
+        <p>No products found for "{searchTerm}"</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {filteredProducts.map((product) => {
+            const cartItem = cart.find((item) => item.id === product.id);
+            const quantity = cartItem ? cartItem.quantity : 0;
 
-          return (
-            <div key={product.id} className="border p-4 shadow-md rounded-lg flex flex-col">
-              
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-40 object-cover mb-4 rounded"
-              />
+            return (
+              <div key={product.id} className="border p-4 shadow-md rounded-lg flex flex-col">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-40 object-cover mb-4 rounded"
+                />
+                <h2 className="text-xl font-semibold">{product.name}</h2>
+                <p className="text-gray-600">{product.description}</p>
+                <p className="font-bold text-lg">₹{product.price}</p>
 
-              <h2 className="text-xl font-semibold">{product.name}</h2>
-              <p className="text-gray-600">{product.description}</p>
-              <p className="font-bold text-lg">₹{product.price}</p>
-
-            
-              <div className="mt-4 flex flex-col gap-2">
-                {quantity > 0 ? (
-                  <div className="flex items-center gap-2">
+                <div className="mt-4 flex flex-col gap-2">
+                  {quantity > 0 ? (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => updateCartQuantity(product.id, quantity - 1)}
+                        className="bg-gray-300 px-3 py-1 rounded text-lg"
+                      >
+                        -
+                      </button>
+                      <span className="text-lg font-semibold">{quantity}</span>
+                      <button
+                        onClick={() => updateCartQuantity(product.id, quantity + 1)}
+                        className="bg-gray-300 px-3 py-1 rounded text-lg"
+                      >
+                        +
+                      </button>
+                    </div>
+                  ) : (
                     <button
-                      onClick={() => updateCartQuantity(product.id, Math.max(0, quantity - 1))}
-                      className="bg-gray-300 px-3 py-1 rounded text-lg"
+                      onClick={() => addToCart({ ...product, quantity: 1 })}
+                      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
                     >
-                      -
+                      Add to Cart
                     </button>
-                    <span className="text-lg font-semibold">{quantity}</span>
-                    <button
-                      onClick={() => updateCartQuantity(product.id, quantity + 1)}
-                      className="bg-gray-300 px-3 py-1 rounded text-lg"
-                    >
-                      +
-                    </button>
-                  </div>
-                ) : (
+                  )}
+
                   <button
-                    onClick={() => addToCart({ ...product, quantity: 1 })}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                    onClick={() => handleBuyNow(product)}
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
                   >
-                    Add to Cart
+                    Buy Now
                   </button>
-                )}
-
-                
-                <button
-                  onClick={() => handleBuyNow(product)}
-                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
-                >
-                  Buy Now
-                </button>
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

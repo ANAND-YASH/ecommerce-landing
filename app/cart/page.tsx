@@ -29,21 +29,25 @@ export default function CartPage() {
                   <p className="text-xl font-bold mt-1">₹{item.price}</p>
 
                   <div className="flex items-center mt-2">
-                    <button
-                      className="border px-2 py-1 rounded-l"
-                      onClick={() => updateCartQuantity(item.id, Math.max(1, item.quantity - 1))}
-                    >
-                      -
-                    </button>
-                    <span className="border-t border-b px-4">{item.quantity}</span>
-                    <button
-                      className="border px-2 py-1 rounded-r"
-                      onClick={() => updateCartQuantity(item.id, item.quantity + 1)}
-                    >
-                      +
-                    </button>
+                  <button
+                      className="border w-10 h-10 flex items-center justify-center text-xl font-bold rounded-1"
+                          onClick={() => updateCartQuantity(item.id, item.quantity - 1)}
+                        >
+                              -
+                                     </button>
+  
+                                           <span className="border-t border-b px-6 py-2 text-lg font-medium">
+                                        {item.quantity}
+                                         </span>
+  
+                                       <button
+                                        className="border w-10 h-10 flex items-center justify-center text-xl font-bold rounded-1"
+                                         onClick={() => updateCartQuantity(item.id, item.quantity + 1)}
+                                             >
+                                                    +
+                                                 </button>
 
-                    <button
+                                    <button
                       className="ml-4 text-red-500"
                       onClick={() => removeFromCart(item.id)}
                     >

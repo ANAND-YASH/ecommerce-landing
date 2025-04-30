@@ -4,6 +4,7 @@ import "./globals.css";
 import { CartProvider } from "./context/CartContext";
 //import { ThemeProvider } from "./context/ThemeContext"; // Import ThemeProvider
 import Navbar from "./components/Navbar"; 
+//import { SearchProvider } from "./context/SearchContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +28,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
        
           <CartProvider>
             <Navbar />
+           
             {children}
+            
           </CartProvider>
        
       </body>
